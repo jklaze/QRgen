@@ -18,6 +18,19 @@ function buildGradient(type, rotationDegrees, colorFrom, colorTo) {
 }
 
 /**
+ * Escape special characters for vCard format.
+ * @param {string} val
+ * @returns {string}
+ */
+function escapeVCardValue(val) {
+  return val
+    .replace(/\\/g, '\\\\')
+    .replace(/;/g, '\\;')
+    .replace(/,/g, '\\,')
+    .replace(/\r?\n/g, '\\n');
+}
+
+/**
  * Get QR data string from current data mode and form fields.
  */
 export function getDataFromMode() {
@@ -53,9 +66,9 @@ export function getDataFromMode() {
       const email = (document.getElementById('data-vcard-email')?.value || '').trim();
       if (!name && !tel && !email) return '';
       const lines = ['BEGIN:VCARD', 'VERSION:3.0'];
-      if (name) lines.push('FN:' + name, 'N:' + name + ';;;');
-      if (tel) lines.push('TEL:' + tel.replace(/\s/g, ''));
-      if (email) lines.push('EMAIL:' + email);
+      if (name) lines.push('FN:' + escapeVCardValue(name), 'N:' + escapeVCardValue(name) + ';;;');
+      if (tel) lines.push('TEL:' + escapeVCardValue(tel.replace(/\s/g, '')));
+      if (email) lines.push('EMAIL:' + escapeVCardValue(email));
       lines.push('END:VCARD');
       return lines.join('\n');
     }
