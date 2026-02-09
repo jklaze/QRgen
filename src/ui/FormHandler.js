@@ -15,12 +15,12 @@ export class FormHandler {
       'data-text', 'data-url', 'data-email', 'data-email-subject', 'data-phone',
       'data-wifi-ssid', 'data-wifi-password', 'data-wifi-type',
       'data-vcard-name', 'data-vcard-tel', 'data-vcard-email',
-      'shape', 'dots-color', 'dots-grad-type', 'dots-grad-rotation', 'dots-grad-from', 'dots-grad-to',
+      'shape', 'dots-color', 'dots-grad-type', 'dots-grad-rotation', 'dots-grad-from', 'dots-grad-to', 'dots-gradient',
       'corners-square-type', 'corners-square-color', 'corners-square-grad-type', 'corners-square-grad-rotation',
-      'corners-square-grad-from', 'corners-square-grad-to',
+      'corners-square-grad-from', 'corners-square-grad-to', 'corners-square-gradient',
       'corners-dot-type', 'corners-dot-color', 'corners-dot-grad-type', 'corners-dot-grad-rotation',
-      'corners-dot-grad-from', 'corners-dot-grad-to',
-      'bg-color', 'bg-grad-type', 'bg-grad-rotation', 'bg-grad-from', 'bg-grad-to',
+      'corners-dot-grad-from', 'corners-dot-grad-to', 'corners-dot-gradient',
+      'bg-color', 'bg-grad-type', 'bg-grad-rotation', 'bg-grad-from', 'bg-grad-to', 'bg-transparent', 'bg-gradient',
       'logo-size', 'logo-margin', 'logo-hide-dots',
     ];
 

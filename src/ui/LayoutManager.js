@@ -62,23 +62,18 @@ export class LayoutManager {
   setupToggles() {
     document.getElementById('dots-gradient')?.addEventListener('change', () => {
       this.toggleDotsGradient();
-      this.triggerUpdate();
     });
     document.getElementById('corners-square-gradient')?.addEventListener('change', () => {
       this.toggleCornersSquareGradient();
-      this.triggerUpdate();
     });
     document.getElementById('corners-dot-gradient')?.addEventListener('change', () => {
       this.toggleCornersDotGradient();
-      this.triggerUpdate();
     });
     document.getElementById('bg-transparent')?.addEventListener('change', () => {
       this.toggleBg();
-      this.triggerUpdate();
     });
     document.getElementById('bg-gradient')?.addEventListener('change', () => {
       this.toggleBg();
-      this.triggerUpdate();
     });
   }
 
