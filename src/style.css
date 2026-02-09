@@ -415,14 +415,15 @@ input[type="checkbox"] {
 }
 .preview-card {
   position: relative;
+  position: sticky;
+  top: 2rem;
+  z-index: 10;
   padding: 2rem;
   background: #ffffff;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: 0 0 24px rgba(0, 0, 0, 0.3);
   overflow: hidden;
-  /* JS drives translateY for smooth delayed follow */
-  will-change: transform;
 }
 
 /* ---- Animated grainient background when transparent ---- */
