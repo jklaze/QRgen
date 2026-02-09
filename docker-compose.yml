@@ -1,0 +1,6 @@
+services:
+  qrgen:
+    build: .
+    container_name: qrgen-app
+    ports:
+      - "3000:80"
