@@ -37,6 +37,9 @@ body {
 
 /* Header */
 .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--border);
 }
@@ -45,6 +48,28 @@ body {
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--text);
+}
+.github-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.github-badge:hover {
+  background: var(--card-hover);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.github-badge-icon {
+  flex-shrink: 0;
 }
 
 /* Two-column layout – sidebar left, preview right */
