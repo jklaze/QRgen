@@ -212,6 +212,7 @@ const previewArea = document.querySelector('.preview-area');
 const LERP_SPEED = 0.08; // lower = more delay (0-1)
 let currentY = 0;
 let targetY = 0;
+let lastAppliedY = null;
 let rafId = null;
 
 function getTargetY() {
@@ -236,8 +237,9 @@ function animateFollow() {
   } else {
     currentY = targetY;
   }
-  if (previewCard) {
+  if (previewCard && currentY !== lastAppliedY) {
     previewCard.style.transform = `translateY(${currentY}px)`;
+    lastAppliedY = currentY;
   }
   rafId = requestAnimationFrame(animateFollow);
 }
