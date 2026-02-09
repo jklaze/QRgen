@@ -1,5 +1,5 @@
 import { createQR, updateQR, downloadQR } from './qr-manager.js';
-import { getOptions, getDataFromMode } from './ui-controls.js';
+import { getOptions } from './ui-controls.js';
 import { presets } from './presets.js';
 
 const DEBOUNCE_MS = 120;
@@ -212,7 +212,6 @@ const previewArea = document.querySelector('.preview-area');
 const LERP_SPEED = 0.08; // lower = more delay (0-1)
 let currentY = 0;
 let targetY = 0;
-let rafId = null;
 
 function getTargetY() {
   if (!previewCard || !previewArea || window.innerWidth <= 900) return 0;
@@ -239,11 +238,11 @@ function animateFollow() {
   if (previewCard) {
     previewCard.style.transform = `translateY(${currentY}px)`;
   }
-  rafId = requestAnimationFrame(animateFollow);
+  requestAnimationFrame(animateFollow);
 }
 
 // Start the loop
-rafId = requestAnimationFrame(animateFollow);
+requestAnimationFrame(animateFollow);
 
 // --- Initial render ---
 initQR();
