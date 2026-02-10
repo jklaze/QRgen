@@ -190,7 +190,7 @@ export function getOptions(overrides = {}) {
   const ecl = document.querySelector('input[name="ecl"]:checked')?.value || 'Q';
 
   const options = {
-    data: data || 'https://github.com',
+    data: data || 'https://github.com/jklaze/QRgen',
     width,
     height,
     margin,
