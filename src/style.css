@@ -168,7 +168,7 @@ body {
   color: var(--text-muted);
 }
 .accordion-panel {
-  padding: 0 1rem 1rem;
+  padding: 1rem;
   border-top: 1px solid var(--border);
 }
 .accordion-panel[hidden] {
@@ -389,7 +389,7 @@ input[type="checkbox"] {
 }
 
 /* Drop zone (logo) */
-.drop-zone {
+.field .drop-zone {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -401,12 +401,12 @@ input[type="checkbox"] {
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
 }
-.drop-zone:hover,
-.drop-zone.dragover {
+.field .drop-zone:hover,
+.field .drop-zone.dragover {
   border-color: var(--accent);
   background: var(--accent-dim);
 }
-.drop-zone span {
+.field .drop-zone span {
   color: var(--text-muted);
   font-size: 0.875rem;
 }
