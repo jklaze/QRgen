@@ -229,12 +229,14 @@ const SIDEBAR_HTML = `
   <section class="accordion" data-section="logo">
     <button type="button" class="accordion-header" aria-expanded="false" aria-controls="panel-logo">Logo</button>
     <div id="panel-logo" class="accordion-panel" role="region" hidden>
-      <div class="field">
-        <label class="drop-zone" id="logo-drop-zone">
-          <input type="file" id="logo-file" accept="image/*" hidden />
-          <span>Drop image or click to upload</span>
-        </label>
-        <button type="button" class="btn-secondary" id="logo-clear">Clear logo</button>
+      <div class="field logo-upload-field">
+        <div class="logo-upload-group">
+          <label class="drop-zone" id="logo-drop-zone">
+            <input type="file" id="logo-file" accept="image/*" hidden />
+            <span>Drop image or click to upload</span>
+          </label>
+          <button type="button" class="btn-secondary" id="logo-clear">Clear logo</button>
+        </div>
       </div>
       <div class="field">
         <label for="logo-size">Image size <span id="logo-size-value">0.4</span></label>
