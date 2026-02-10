@@ -22,6 +22,27 @@
       <qr-sidebar></qr-sidebar>
     </aside>
   </main>
+  <button type="button" class="export-float-btn" id="export-float-btn" aria-label="Export QR code" title="Export">Export</button>
+  <div class="modal-overlay" id="export-modal-overlay" aria-hidden="true" hidden>
+    <div class="modal" id="export-modal" role="dialog" aria-labelledby="export-modal-title" aria-modal="true">
+      <button type="button" class="modal-close" id="export-modal-close" aria-label="Close">&times;</button>
+      <h2 class="modal-title" id="export-modal-title">Export</h2>
+      <div class="field">
+        <label for="export-filename">Filename</label>
+        <input type="text" id="export-filename" value="qr" placeholder="qr" />
+      </div>
+      <div class="field">
+        <label for="export-format">Format</label>
+        <select id="export-format">
+          <option value="png">PNG</option>
+          <option value="jpeg">JPEG</option>
+          <option value="webp">WebP</option>
+          <option value="svg">SVG</option>
+        </select>
+      </div>
+      <button type="button" class="btn-primary" id="download-btn">Download</button>
+    </div>
+  </div>
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>

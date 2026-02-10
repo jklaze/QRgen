@@ -443,6 +443,89 @@ input[type="checkbox"] {
   background: var(--accent-dim);
 }
 
+/* Export float button */
+.export-float-btn {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  font-family: var(--font);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--accent);
+  background: var(--card);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.export-float-btn:hover {
+  color: var(--bg);
+  background: var(--accent);
+  box-shadow: 0 0 16px var(--accent-dim);
+}
+
+/* Export modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(15, 10, 31, 0.75);
+  backdrop-filter: blur(4px);
+}
+.modal-overlay[hidden] {
+  display: none;
+}
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  padding: 1.5rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+.modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+.modal-close:hover {
+  color: var(--text);
+  background: var(--accent-dim);
+}
+.modal-title {
+  margin: 0 2rem 1rem 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.modal .field {
+  margin-bottom: 1rem;
+}
+.modal .btn-primary {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
 /* Preview area – sticky so it stays centered in viewport while scrolling */
 .preview-area {
   display: flex;

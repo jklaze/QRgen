@@ -202,11 +202,39 @@ if (presetContainer) {
   });
 }
 
+// --- Export modal ---
+const exportFloatBtn = document.getElementById('export-float-btn');
+const exportModalOverlay = document.getElementById('export-modal-overlay');
+const exportModalClose = document.getElementById('export-modal-close');
+
+function openExportModal() {
+  if (exportModalOverlay) {
+    exportModalOverlay.hidden = false;
+    exportModalOverlay.setAttribute('aria-hidden', 'false');
+  }
+}
+function closeExportModal() {
+  if (exportModalOverlay) {
+    exportModalOverlay.hidden = true;
+    exportModalOverlay.setAttribute('aria-hidden', 'true');
+  }
+}
+
+exportFloatBtn?.addEventListener('click', openExportModal);
+exportModalClose?.addEventListener('click', closeExportModal);
+exportModalOverlay?.addEventListener('click', (e) => {
+  if (e.target === exportModalOverlay) closeExportModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && exportModalOverlay && !exportModalOverlay.hidden) closeExportModal();
+});
+
 // --- Download ---
 document.getElementById('download-btn')?.addEventListener('click', () => {
   const name = (document.getElementById('export-filename')?.value || 'qr').trim() || 'qr';
   const extension = document.getElementById('export-format')?.value || 'png';
   downloadQR(qrInstance, { name, extension });
+  closeExportModal();
 });
 
 // --- Smooth delayed follow: lerp translateY so card stays centered in viewport ---

@@ -257,25 +257,6 @@ const SIDEBAR_HTML = `
       <div class="preset-buttons" id="preset-buttons"></div>
     </div>
   </section>
-  <section class="accordion" data-section="export">
-    <button type="button" class="accordion-header" aria-expanded="false" aria-controls="panel-export">Export</button>
-    <div id="panel-export" class="accordion-panel" role="region" hidden>
-      <div class="field">
-        <label for="export-filename">Filename</label>
-        <input type="text" id="export-filename" value="qr" placeholder="qr" />
-      </div>
-      <div class="field">
-        <label for="export-format">Format</label>
-        <select id="export-format">
-          <option value="png">PNG</option>
-          <option value="jpeg">JPEG</option>
-          <option value="webp">WebP</option>
-          <option value="svg">SVG</option>
-        </select>
-      </div>
-      <button type="button" class="btn-primary" id="download-btn">Download</button>
-    </div>
-  </section>
 `;
 
 class QrSidebar extends HTMLElement {
