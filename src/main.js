@@ -1,9 +1,9 @@
 import './components/qr-header.js';
 import './components/qr-preview.js';
 import './components/qr-sidebar.js';
+import { presets } from './presets.js';
 import { createQR, updateQR, downloadQR } from './qr-manager.js';
 import { getOptions } from './ui-controls.js';
-import { presets } from './presets.js';
 
 const DEBOUNCE_MS = 120;
 let qrInstance = null;

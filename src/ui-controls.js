@@ -33,7 +33,7 @@ function escapeVCardValue(val) {
 /**
  * Get QR data string from current data mode and form fields.
  */
-export function getDataFromMode() {
+function getDataFromMode() {
   const mode = document.querySelector('.mode-tabs [role="tab"][aria-selected="true"]')?.dataset.mode || 'text';
   switch (mode) {
     case 'text':
