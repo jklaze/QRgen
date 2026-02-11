@@ -4,6 +4,7 @@ import './components/qr-sidebar.js';
 import { createQR, updateQR, downloadQR } from './qr-manager.js';
 import { getOptions } from './ui-controls.js';
 import { presets } from './presets.js';
+import { processLogoFile } from './file-utils.js';
 
 const DEBOUNCE_MS = 120;
 let qrInstance = null;
@@ -150,13 +151,18 @@ document.querySelectorAll('#corners-square-type, #corners-dot-type').forEach((el
 
 // --- Logo: file input + drag-and-drop + clear ---
 function handleLogoFile(file) {
-  if (!file || !file.type.startsWith('image/')) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    logoDataUrl = e.target?.result ?? null;
-    scheduleUpdate();
-  };
-  reader.readAsDataURL(file);
+  if (!file) return;
+  processLogoFile(file)
+    .then((result) => {
+      logoDataUrl = result;
+      scheduleUpdate();
+    })
+    .catch((error) => {
+      console.error(error);
+      alert(error.message);
+      const fileInput = document.getElementById('logo-file');
+      if (fileInput) fileInput.value = '';
+    });
 }
 document.getElementById('logo-file')?.addEventListener('change', (e) => {
   const file = e.target.files?.[0];
