@@ -27,7 +27,8 @@ function escapeVCardValue(val) {
     .replace(/\\/g, '\\\\')
     .replace(/;/g, '\\;')
     .replace(/,/g, '\\,')
-    .replace(/\r?\n/g, '\\n');
+    .replace(/:/g, '\\:')
+    .replace(/(\r\n|\r|\n)/g, '\\n');
 }
 
 /**
