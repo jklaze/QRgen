@@ -24,6 +24,7 @@ function scheduleUpdate() {
     }
     const transparent = document.getElementById('bg-transparent')?.checked ?? false;
     document.querySelector('.preview-card')?.classList.toggle('transparent-bg', transparent);
+    if (typeof startAnimation === 'function') startAnimation();
   }, DEBOUNCE_MS);
 }
 
@@ -55,6 +56,7 @@ document.querySelectorAll('.accordion').forEach((section) => {
     header.setAttribute('aria-expanded', expanded);
     panel.hidden = !expanded;
     section.dataset.open = expanded;
+    if (typeof startAnimation === 'function') startAnimation();
   });
   section.dataset.open = 'true';
 });
@@ -233,6 +235,7 @@ const LERP_SPEED = 0.08; // lower = more delay (0-1)
 let currentY = 0;
 let targetY = 0;
 let lastAppliedY = null;
+let isAnimating = false;
 
 function getTargetY() {
   if (!previewCard || !previewArea || window.innerWidth <= 900) return 0;
@@ -260,11 +263,27 @@ function animateFollow() {
     previewCard.style.transform = `translateY(${currentY}px)`;
     lastAppliedY = currentY;
   }
-  requestAnimationFrame(animateFollow);
+
+  if (Math.abs(targetY - currentY) > 0.5) {
+    requestAnimationFrame(animateFollow);
+  } else {
+    isAnimating = false;
+  }
 }
 
-// Start the loop
-requestAnimationFrame(animateFollow);
+function startAnimation() {
+  if (!isAnimating) {
+    isAnimating = true;
+    requestAnimationFrame(animateFollow);
+  }
+}
+
+// Start the loop initially
+startAnimation();
+
+// Add listeners to restart animation
+window.addEventListener('scroll', startAnimation, { passive: true });
+window.addEventListener('resize', startAnimation, { passive: true });
 
 // --- Initial render ---
 initQR();
