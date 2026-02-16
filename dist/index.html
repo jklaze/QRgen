@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Generator</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script type="module" crossorigin src="/assets/index-4vAI-IDm.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-DRMNuK3G.css">
+</head>
+<body>
+  <header class="header">
+    <qr-header></qr-header>
+  </header>
+  <main class="app">
+    <div class="preview-area">
+      <qr-preview></qr-preview>
+    </div>
+    <aside class="sidebar">
+      <qr-sidebar></qr-sidebar>
+    </aside>
+  </main>
+  <button type="button" class="export-float-btn" id="export-float-btn" aria-label="Export QR code" title="Export">Export</button>
+  <div class="modal-overlay" id="export-modal-overlay" aria-hidden="true" hidden>
+    <div class="modal" id="export-modal" role="dialog" aria-labelledby="export-modal-title" aria-modal="true">
+      <button type="button" class="modal-close" id="export-modal-close" aria-label="Close">&times;</button>
+      <h2 class="modal-title" id="export-modal-title">Export</h2>
+      <div class="field">
+        <label for="export-filename">Filename</label>
+        <input type="text" id="export-filename" value="qr" placeholder="qr" />
+      </div>
+      <div class="field">
+        <label for="export-format">Format</label>
+        <select id="export-format">
+          <option value="png">PNG</option>
+          <option value="jpeg">JPEG</option>
+          <option value="webp">WebP</option>
+          <option value="svg">SVG</option>
+        </select>
+      </div>
+      <button type="button" class="btn-primary" id="download-btn">Download</button>
+    </div>
+  </div>
+</body>
+</html>
