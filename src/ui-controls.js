@@ -78,66 +78,54 @@ export function getDataFromMode() {
 }
 
 /**
- * Get dots options from form (dots section).
+ * Helper to get options for dots, corner squares, and corner dots.
+ * @param {string} prefix - The ID prefix (e.g., 'dots', 'corners-square').
+ * @param {function} [typeGetter] - Optional function to retrieve the type. Defaults to reading value from element with ID `${prefix}-type`.
  */
-function getDotsOptions() {
-  const gradient = document.getElementById('dots-gradient')?.checked ?? false;
-  const type = document.querySelector('.shape-picker[data-target="dots-type"] button.active')?.dataset.value || 'square';
+function getStyleOptions(prefix, typeGetter) {
+  const gradient = document.getElementById(`${prefix}-gradient`)?.checked ?? false;
+
+  let type = 'square';
+  if (typeGetter) {
+    type = typeGetter();
+  } else {
+    type = document.getElementById(`${prefix}-type`)?.value || 'square';
+  }
+
   const base = { type };
   if (gradient) {
     base.gradient = buildGradient(
-      document.getElementById('dots-grad-type')?.value || 'linear',
-      Number(document.getElementById('dots-grad-rotation')?.value) || 0,
-      document.getElementById('dots-grad-from')?.value || '#000000',
-      document.getElementById('dots-grad-to')?.value || '#333333'
+      document.getElementById(`${prefix}-grad-type`)?.value || 'linear',
+      Number(document.getElementById(`${prefix}-grad-rotation`)?.value) || 0,
+      document.getElementById(`${prefix}-grad-from`)?.value || '#000000',
+      document.getElementById(`${prefix}-grad-to`)?.value || '#333333'
     );
   } else {
-    base.color = document.getElementById('dots-color')?.value || '#000000';
+    base.color = document.getElementById(`${prefix}-color`)?.value || '#000000';
     base.gradient = undefined; // clear so library doesn't keep previous gradient
   }
   return base;
 }
 
 /**
+ * Get dots options from form (dots section).
+ */
+function getDotsOptions() {
+  return getStyleOptions('dots', () => document.querySelector('.shape-picker[data-target="dots-type"] button.active')?.dataset.value || 'square');
+}
+
+/**
  * Get corner square options from form.
  */
 function getCornersSquareOptions() {
-  const gradient = document.getElementById('corners-square-gradient')?.checked ?? false;
-  const type = document.getElementById('corners-square-type')?.value || 'square';
-  const base = { type };
-  if (gradient) {
-    base.gradient = buildGradient(
-      document.getElementById('corners-square-grad-type')?.value || 'linear',
-      Number(document.getElementById('corners-square-grad-rotation')?.value) || 0,
-      document.getElementById('corners-square-grad-from')?.value || '#000000',
-      document.getElementById('corners-square-grad-to')?.value || '#333333'
-    );
-  } else {
-    base.color = document.getElementById('corners-square-color')?.value || '#000000';
-    base.gradient = undefined;
-  }
-  return base;
+  return getStyleOptions('corners-square');
 }
 
 /**
  * Get corner dot options from form.
  */
 function getCornersDotOptions() {
-  const gradient = document.getElementById('corners-dot-gradient')?.checked ?? false;
-  const type = document.getElementById('corners-dot-type')?.value || 'square';
-  const base = { type };
-  if (gradient) {
-    base.gradient = buildGradient(
-      document.getElementById('corners-dot-grad-type')?.value || 'linear',
-      Number(document.getElementById('corners-dot-grad-rotation')?.value) || 0,
-      document.getElementById('corners-dot-grad-from')?.value || '#000000',
-      document.getElementById('corners-dot-grad-to')?.value || '#333333'
-    );
-  } else {
-    base.color = document.getElementById('corners-dot-color')?.value || '#000000';
-    base.gradient = undefined;
-  }
-  return base;
+  return getStyleOptions('corners-dot');
 }
 
 /**
