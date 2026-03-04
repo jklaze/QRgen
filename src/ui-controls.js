@@ -45,39 +45,41 @@ function escapeWifiString(val) {
 }
 
 /**
- * Get QR data string from current data mode and form fields.
+ * Generate QR data string based on mode and input values.
+ * Pure function separated from DOM access.
+ * @param {string} mode - 'text' | 'url' | 'email' | 'phone' | 'wifi' | 'vcard'
+ * @param {Object} inputs - Object containing input values
  */
-function getDataFromMode() {
-  const mode = document.querySelector('.mode-tabs [role="tab"][aria-selected="true"]')?.dataset.mode || 'text';
+export function generateQRData(mode, inputs) {
   switch (mode) {
     case 'text':
-      return (document.getElementById('data-text')?.value || '').trim();
+      return inputs.text || '';
     case 'url':
-      return (document.getElementById('data-url')?.value || '').trim();
+      return inputs.url || '';
     case 'email': {
-      const email = (document.getElementById('data-email')?.value || '').trim();
-      const subject = (document.getElementById('data-email-subject')?.value || '').trim();
+      const email = inputs.email || '';
+      const subject = inputs.emailSubject || '';
       if (!email) return '';
       const url = 'mailto:' + encodeURIComponent(email).replace(/%40/g, '@');
       return subject ? url + '?subject=' + encodeURIComponent(subject) : url;
     }
     case 'phone': {
-      const phone = (document.getElementById('data-phone')?.value || '').trim();
+      const phone = inputs.phone || '';
       return phone ? 'tel:' + phone.replace(/\s/g, '') : '';
     }
     case 'wifi': {
-      const ssid = (document.getElementById('data-wifi-ssid')?.value || '').trim();
-      const password = document.getElementById('data-wifi-password')?.value ?? '';
-      const type = document.getElementById('data-wifi-type')?.value || 'WPA';
+      const ssid = inputs.wifiSsid || '';
+      const password = inputs.wifiPassword || '';
+      const type = inputs.wifiType || 'WPA';
       if (!ssid) return '';
       const T = type ? `T:${type};` : '';
       const P = password ? `P:${escapeWifiString(password)};` : '';
       return `WIFI:${T}S:${escapeWifiString(ssid)};${P};;`;
     }
     case 'vcard': {
-      const name = (document.getElementById('data-vcard-name')?.value || '').trim();
-      const tel = (document.getElementById('data-vcard-tel')?.value || '').trim();
-      const email = (document.getElementById('data-vcard-email')?.value || '').trim();
+      const name = inputs.vcardName || '';
+      const tel = inputs.vcardTel || '';
+      const email = inputs.vcardEmail || '';
       if (!name && !tel && !email) return '';
       const lines = ['BEGIN:VCARD', 'VERSION:3.0'];
       if (name) lines.push('FN:' + escapeVCardValue(name), 'N:' + escapeVCardValue(name) + ';;;');
@@ -87,8 +89,31 @@ function getDataFromMode() {
       return lines.join('\n');
     }
     default:
-      return (document.getElementById('data-text')?.value || '').trim();
+      return inputs.text || '';
   }
+}
+
+/**
+ * Get QR data string from current data mode and form fields.
+ */
+export function getDataFromMode() {
+  const mode = document.querySelector('.mode-tabs [role="tab"][aria-selected="true"]')?.dataset.mode || 'text';
+
+  const inputs = {
+    text: (document.getElementById('data-text')?.value || '').trim(),
+    url: (document.getElementById('data-url')?.value || '').trim(),
+    email: (document.getElementById('data-email')?.value || '').trim(),
+    emailSubject: (document.getElementById('data-email-subject')?.value || '').trim(),
+    phone: (document.getElementById('data-phone')?.value || '').trim(),
+    wifiSsid: (document.getElementById('data-wifi-ssid')?.value || '').trim(),
+    wifiPassword: document.getElementById('data-wifi-password')?.value ?? '',
+    wifiType: document.getElementById('data-wifi-type')?.value || 'WPA',
+    vcardName: (document.getElementById('data-vcard-name')?.value || '').trim(),
+    vcardTel: (document.getElementById('data-vcard-tel')?.value || '').trim(),
+    vcardEmail: (document.getElementById('data-vcard-email')?.value || '').trim(),
+  };
+
+  return generateQRData(mode, inputs);
 }
 
 /**
