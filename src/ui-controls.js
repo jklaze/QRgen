@@ -27,27 +27,13 @@ function escapeVCardValue(val) {
     .replace(/\\/g, '\\\\')
     .replace(/;/g, '\\;')
     .replace(/,/g, '\\,')
-    .replace(/:/g, '\\:')
-    .replace(/(\r\n|\r|\n)/g, '\\n');
-}
-
-/**
- * Escape special characters for WIFI format.
- * @param {string} val
- * @returns {string}
- */
-function escapeWifiString(val) {
-  return val
-    .replace(/\\/g, '\\\\')
-    .replace(/;/g, '\\;')
-    .replace(/:/g, '\\:')
-    .replace(/,/g, '\\,');
+    .replace(/\r?\n/g, '\\n');
 }
 
 /**
  * Get QR data string from current data mode and form fields.
  */
-function getDataFromMode() {
+export function getDataFromMode() {
   const mode = document.querySelector('.mode-tabs [role="tab"][aria-selected="true"]')?.dataset.mode || 'text';
   switch (mode) {
     case 'text':
@@ -71,8 +57,8 @@ function getDataFromMode() {
       const type = document.getElementById('data-wifi-type')?.value || 'WPA';
       if (!ssid) return '';
       const T = type ? `T:${type};` : '';
-      const P = password ? `P:${escapeWifiString(password)};` : '';
-      return `WIFI:${T}S:${escapeWifiString(ssid)};${P};;`;
+      const P = password ? `P:${password};` : '';
+      return `WIFI:${T}S:${ssid};${P};;`;
     }
     case 'vcard': {
       const name = (document.getElementById('data-vcard-name')?.value || '').trim();
