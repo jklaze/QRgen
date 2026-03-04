@@ -1,9 +1,10 @@
 import './components/qr-header.js';
 import './components/qr-preview.js';
 import './components/qr-sidebar.js';
+import { presets } from './presets.js';
 import { createQR, updateQR, downloadQR } from './qr-manager.js';
 import { getOptions } from './ui-controls.js';
-import { presets } from './presets.js';
+import { processLogoFile } from './file-utils.js';
 
 const DEBOUNCE_MS = 120;
 let qrInstance = null;
@@ -73,24 +74,13 @@ if (dotsPicker) {
 }
 
 // --- Gradient toggles ---
-function toggleDotsGradient() {
-  const useGrad = document.getElementById('dots-gradient')?.checked ?? false;
-  document.querySelectorAll('.dots-solid').forEach((el) => el.classList.toggle('hidden', useGrad));
-  document.querySelectorAll('.dots-gradient').forEach((el) => el.classList.toggle('hidden', !useGrad));
+function toggleGradient(prefix) {
+  const useGrad = document.getElementById(`${prefix}-gradient`)?.checked ?? false;
+  document.querySelectorAll(`.${prefix}-solid`).forEach((el) => el.classList.toggle('hidden', useGrad));
+  document.querySelectorAll(`.${prefix}-gradient`).forEach((el) => el.classList.toggle('hidden', !useGrad));
   scheduleUpdate();
 }
-function toggleCornersSquareGradient() {
-  const useGrad = document.getElementById('corners-square-gradient')?.checked ?? false;
-  document.querySelectorAll('.corners-square-solid').forEach((el) => el.classList.toggle('hidden', useGrad));
-  document.querySelectorAll('.corners-square-gradient').forEach((el) => el.classList.toggle('hidden', !useGrad));
-  scheduleUpdate();
-}
-function toggleCornersDotGradient() {
-  const useGrad = document.getElementById('corners-dot-gradient')?.checked ?? false;
-  document.querySelectorAll('.corners-dot-solid').forEach((el) => el.classList.toggle('hidden', useGrad));
-  document.querySelectorAll('.corners-dot-gradient').forEach((el) => el.classList.toggle('hidden', !useGrad));
-  scheduleUpdate();
-}
+
 function toggleBg() {
   const transparent = document.getElementById('bg-transparent')?.checked ?? false;
   const useGrad = document.getElementById('bg-gradient')?.checked ?? false;
@@ -98,9 +88,9 @@ function toggleBg() {
   document.querySelectorAll('.bg-gradient-el').forEach((el) => el.classList.toggle('hidden', !useGrad || transparent));
   scheduleUpdate();
 }
-document.getElementById('dots-gradient')?.addEventListener('change', toggleDotsGradient);
-document.getElementById('corners-square-gradient')?.addEventListener('change', toggleCornersSquareGradient);
-document.getElementById('corners-dot-gradient')?.addEventListener('change', toggleCornersDotGradient);
+document.getElementById('dots-gradient')?.addEventListener('change', () => toggleGradient('dots'));
+document.getElementById('corners-square-gradient')?.addEventListener('change', () => toggleGradient('corners-square'));
+document.getElementById('corners-dot-gradient')?.addEventListener('change', () => toggleGradient('corners-dot'));
 document.getElementById('bg-transparent')?.addEventListener('change', toggleBg);
 document.getElementById('bg-gradient')?.addEventListener('change', toggleBg);
 
@@ -150,13 +140,18 @@ document.querySelectorAll('#corners-square-type, #corners-dot-type').forEach((el
 
 // --- Logo: file input + drag-and-drop + clear ---
 function handleLogoFile(file) {
-  if (!file || !file.type.startsWith('image/')) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    logoDataUrl = e.target?.result ?? null;
-    scheduleUpdate();
-  };
-  reader.readAsDataURL(file);
+  if (!file) return;
+  processLogoFile(file)
+    .then((result) => {
+      logoDataUrl = result;
+      scheduleUpdate();
+    })
+    .catch((error) => {
+      console.error(error);
+      alert(error.message);
+      const fileInput = document.getElementById('logo-file');
+      if (fileInput) fileInput.value = '';
+    });
 }
 document.getElementById('logo-file')?.addEventListener('change', (e) => {
   const file = e.target.files?.[0];
@@ -192,9 +187,9 @@ if (presetContainer) {
     btn.textContent = preset.name;
     btn.addEventListener('click', () => {
       preset.apply();
-      toggleDotsGradient();
-      toggleCornersSquareGradient();
-      toggleCornersDotGradient();
+      toggleGradient('dots');
+      toggleGradient('corners-square');
+      toggleGradient('corners-dot');
       toggleBg();
       scheduleUpdate();
     });
