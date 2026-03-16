@@ -1,7 +1,7 @@
 import './components/qr-header.js';
 import './components/qr-preview.js';
 import './components/qr-sidebar.js';
-import { presets } from './presets.js';
+import { presets, applySettings } from './presets.js';
 import { createQR, updateQR, downloadQR } from './qr-manager.js';
 import { getOptions } from './ui-controls.js';
 import { processLogoFile } from './file-utils.js';
@@ -185,7 +185,7 @@ if (presetContainer) {
     btn.type = 'button';
     btn.textContent = preset.name;
     btn.addEventListener('click', () => {
-      preset.apply();
+      applySettings(preset.settings);
       toggleGradient('dots');
       toggleGradient('corners-square');
       toggleGradient('corners-dot');
