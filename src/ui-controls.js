@@ -27,43 +27,59 @@ function escapeVCardValue(val) {
     .replace(/\\/g, '\\\\')
     .replace(/;/g, '\\;')
     .replace(/,/g, '\\,')
-    .replace(/\r?\n/g, '\\n');
+    .replace(/:/g, '\\:')
+    .replace(/(\r\n|\r|\n)/g, '\\n');
 }
 
 /**
- * Get QR data string from current data mode and form fields.
+ * Escape special characters for WIFI format.
+ * @param {string} val
+ * @returns {string}
  */
-export function getDataFromMode() {
-  const mode = document.querySelector('.mode-tabs [role="tab"][aria-selected="true"]')?.dataset.mode || 'text';
+function escapeWifiString(val) {
+  return val
+    .replace(/\\/g, '\\\\')
+    .replace(/;/g, '\\;')
+    .replace(/:/g, '\\:')
+    .replace(/,/g, '\\,');
+}
+
+/**
+ * Generate QR data string based on mode and input values.
+ * Pure function separated from DOM access.
+ * @param {string} mode - 'text' | 'url' | 'email' | 'phone' | 'wifi' | 'vcard'
+ * @param {Object} inputs - Object containing input values
+ */
+export function generateQRData(mode, inputs) {
   switch (mode) {
     case 'text':
-      return (document.getElementById('data-text')?.value || '').trim();
+      return inputs.text || '';
     case 'url':
-      return (document.getElementById('data-url')?.value || '').trim();
+      return inputs.url || '';
     case 'email': {
-      const email = (document.getElementById('data-email')?.value || '').trim();
-      const subject = (document.getElementById('data-email-subject')?.value || '').trim();
+      const email = inputs.email || '';
+      const subject = inputs.emailSubject || '';
       if (!email) return '';
       const url = 'mailto:' + encodeURIComponent(email).replace(/%40/g, '@');
       return subject ? url + '?subject=' + encodeURIComponent(subject) : url;
     }
     case 'phone': {
-      const phone = (document.getElementById('data-phone')?.value || '').trim();
+      const phone = inputs.phone || '';
       return phone ? 'tel:' + phone.replace(/\s/g, '') : '';
     }
     case 'wifi': {
-      const ssid = (document.getElementById('data-wifi-ssid')?.value || '').trim();
-      const password = document.getElementById('data-wifi-password')?.value ?? '';
-      const type = document.getElementById('data-wifi-type')?.value || 'WPA';
+      const ssid = inputs.wifiSsid || '';
+      const password = inputs.wifiPassword || '';
+      const type = inputs.wifiType || 'WPA';
       if (!ssid) return '';
       const T = type ? `T:${type};` : '';
-      const P = password ? `P:${password};` : '';
-      return `WIFI:${T}S:${ssid};${P};;`;
+      const P = password ? `P:${escapeWifiString(password)};` : '';
+      return `WIFI:${T}S:${escapeWifiString(ssid)};${P};;`;
     }
     case 'vcard': {
-      const name = (document.getElementById('data-vcard-name')?.value || '').trim();
-      const tel = (document.getElementById('data-vcard-tel')?.value || '').trim();
-      const email = (document.getElementById('data-vcard-email')?.value || '').trim();
+      const name = inputs.vcardName || '';
+      const tel = inputs.vcardTel || '';
+      const email = inputs.vcardEmail || '';
       if (!name && !tel && !email) return '';
       const lines = ['BEGIN:VCARD', 'VERSION:3.0'];
       if (name) lines.push('FN:' + escapeVCardValue(name), 'N:' + escapeVCardValue(name) + ';;;');
@@ -73,71 +89,97 @@ export function getDataFromMode() {
       return lines.join('\n');
     }
     default:
-      return (document.getElementById('data-text')?.value || '').trim();
+      return inputs.text || '';
   }
 }
 
 /**
- * Get dots options from form (dots section).
+ * Get QR data string from current data mode and form fields.
  */
-function getDotsOptions() {
-  const gradient = document.getElementById('dots-gradient')?.checked ?? false;
-  const type = document.querySelector('.shape-picker[data-target="dots-type"] button.active')?.dataset.value || 'square';
+export function getDataFromMode() {
+  const mode = document.querySelector('.mode-tabs [role="tab"][aria-selected="true"]')?.dataset.mode || 'text';
+  const inputs = {};
+
+  switch (mode) {
+    case 'text':
+      inputs.text = (document.getElementById('data-text')?.value || '').trim();
+      break;
+    case 'url':
+      inputs.url = (document.getElementById('data-url')?.value || '').trim();
+      break;
+    case 'email':
+      inputs.email = (document.getElementById('data-email')?.value || '').trim();
+      inputs.emailSubject = (document.getElementById('data-email-subject')?.value || '').trim();
+      break;
+    case 'phone':
+      inputs.phone = (document.getElementById('data-phone')?.value || '').trim();
+      break;
+    case 'wifi':
+      inputs.wifiSsid = (document.getElementById('data-wifi-ssid')?.value || '').trim();
+      inputs.wifiPassword = document.getElementById('data-wifi-password')?.value ?? '';
+      inputs.wifiType = document.getElementById('data-wifi-type')?.value || 'WPA';
+      break;
+    case 'vcard':
+      inputs.vcardName = (document.getElementById('data-vcard-name')?.value || '').trim();
+      inputs.vcardTel = (document.getElementById('data-vcard-tel')?.value || '').trim();
+      inputs.vcardEmail = (document.getElementById('data-vcard-email')?.value || '').trim();
+      break;
+    default:
+      inputs.text = (document.getElementById('data-text')?.value || '').trim();
+  }
+
+  return generateQRData(mode, inputs);
+}
+
+/**
+ * Helper to get options for dots, corner squares, and corner dots.
+ * @param {string} prefix - The ID prefix (e.g., 'dots', 'corners-square').
+ * @param {function} [typeGetter] - Optional function to retrieve the type. Defaults to reading value from element with ID `${prefix}-type`.
+ */
+function getStyleOptions(prefix, typeGetter) {
+  const gradient = document.getElementById(`${prefix}-gradient`)?.checked ?? false;
+
+  let type = 'square';
+  if (typeGetter) {
+    type = typeGetter();
+  } else {
+    type = document.getElementById(`${prefix}-type`)?.value || 'square';
+  }
+
   const base = { type };
   if (gradient) {
     base.gradient = buildGradient(
-      document.getElementById('dots-grad-type')?.value || 'linear',
-      Number(document.getElementById('dots-grad-rotation')?.value) || 0,
-      document.getElementById('dots-grad-from')?.value || '#000000',
-      document.getElementById('dots-grad-to')?.value || '#333333'
+      document.getElementById(`${prefix}-grad-type`)?.value || 'linear',
+      Number(document.getElementById(`${prefix}-grad-rotation`)?.value) || 0,
+      document.getElementById(`${prefix}-grad-from`)?.value || '#000000',
+      document.getElementById(`${prefix}-grad-to`)?.value || '#333333'
     );
   } else {
-    base.color = document.getElementById('dots-color')?.value || '#000000';
+    base.color = document.getElementById(`${prefix}-color`)?.value || '#000000';
     base.gradient = undefined; // clear so library doesn't keep previous gradient
   }
   return base;
 }
 
 /**
+ * Get dots options from form (dots section).
+ */
+function getDotsOptions() {
+  return getStyleOptions('dots', () => document.querySelector('.shape-picker[data-target="dots-type"] button.active')?.dataset.value || 'square');
+}
+
+/**
  * Get corner square options from form.
  */
 function getCornersSquareOptions() {
-  const gradient = document.getElementById('corners-square-gradient')?.checked ?? false;
-  const type = document.getElementById('corners-square-type')?.value || 'square';
-  const base = { type };
-  if (gradient) {
-    base.gradient = buildGradient(
-      document.getElementById('corners-square-grad-type')?.value || 'linear',
-      Number(document.getElementById('corners-square-grad-rotation')?.value) || 0,
-      document.getElementById('corners-square-grad-from')?.value || '#000000',
-      document.getElementById('corners-square-grad-to')?.value || '#333333'
-    );
-  } else {
-    base.color = document.getElementById('corners-square-color')?.value || '#000000';
-    base.gradient = undefined;
-  }
-  return base;
+  return getStyleOptions('corners-square');
 }
 
 /**
  * Get corner dot options from form.
  */
 function getCornersDotOptions() {
-  const gradient = document.getElementById('corners-dot-gradient')?.checked ?? false;
-  const type = document.getElementById('corners-dot-type')?.value || 'square';
-  const base = { type };
-  if (gradient) {
-    base.gradient = buildGradient(
-      document.getElementById('corners-dot-grad-type')?.value || 'linear',
-      Number(document.getElementById('corners-dot-grad-rotation')?.value) || 0,
-      document.getElementById('corners-dot-grad-from')?.value || '#000000',
-      document.getElementById('corners-dot-grad-to')?.value || '#333333'
-    );
-  } else {
-    base.color = document.getElementById('corners-dot-color')?.value || '#000000';
-    base.gradient = undefined;
-  }
-  return base;
+  return getStyleOptions('corners-dot');
 }
 
 /**

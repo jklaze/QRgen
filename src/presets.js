@@ -1,10 +1,10 @@
 /**
  * Apply a value to an input; if selector is a string, use getElementById.
  */
-function set(id, value, isCheckbox = false) {
+function set(id, value) {
   const el = typeof id === 'string' ? document.getElementById(id) : id;
   if (!el) return;
-  if (isCheckbox) {
+  if (el.type === 'checkbox') {
     el.checked = !!value;
   } else {
     el.value = value;
@@ -17,10 +17,26 @@ function setDotType(value) {
   if (btn) btn.classList.add('active');
 }
 
-const PRESETS_DATA = [
+/**
+ * Apply a batch of settings to the DOM.
+ */
+export function applySettings(settings) {
+  for (const [id, value] of Object.entries(settings)) {
+    if (id === 'dots-type') {
+      setDotType(value);
+    } else {
+      set(id, value);
+    }
+  }
+}
+
+/**
+ * Built-in style presets.
+ */
+export const presets = [
   {
     name: 'Classic',
-    values: {
+    settings: {
       'dots-type': 'square',
       'dots-gradient': false,
       'dots-color': '#000000',
@@ -37,7 +53,7 @@ const PRESETS_DATA = [
   },
   {
     name: 'Rounded',
-    values: {
+    settings: {
       'dots-type': 'rounded',
       'dots-gradient': false,
       'dots-color': '#000000',
@@ -54,7 +70,7 @@ const PRESETS_DATA = [
   },
   {
     name: 'Dots',
-    values: {
+    settings: {
       'dots-type': 'dots',
       'dots-gradient': false,
       'dots-color': '#1a1a2e',
@@ -71,7 +87,7 @@ const PRESETS_DATA = [
   },
   {
     name: 'Gradient',
-    values: {
+    settings: {
       'dots-type': 'rounded',
       'dots-gradient': true,
       'dots-grad-type': 'linear',
@@ -100,7 +116,7 @@ const PRESETS_DATA = [
   },
   {
     name: 'Neon',
-    values: {
+    settings: {
       'dots-type': 'rounded',
       'dots-gradient': false,
       'dots-color': '#00d4ff',
@@ -117,7 +133,7 @@ const PRESETS_DATA = [
   },
   {
     name: 'Elegant',
-    values: {
+    settings: {
       'dots-type': 'classy-rounded',
       'dots-gradient': false,
       'dots-color': '#2d1f54',
@@ -134,7 +150,7 @@ const PRESETS_DATA = [
   },
   {
     name: 'Minimal',
-    values: {
+    settings: {
       'dots-type': 'square',
       'dots-gradient': false,
       'dots-color': '#000000',
@@ -150,22 +166,3 @@ const PRESETS_DATA = [
     },
   },
 ];
-
-function applyPreset(values) {
-  for (const [key, value] of Object.entries(values)) {
-    if (key === 'dots-type') {
-      setDotType(value);
-    } else {
-      set(key, value, typeof value === 'boolean');
-    }
-  }
-}
-
-/**
- * Built-in style presets. Each preset is { name, apply }.
- * apply() sets form control values.
- */
-export const presets = PRESETS_DATA.map((preset) => ({
-  name: preset.name,
-  apply: () => applyPreset(preset.values),
-}));
