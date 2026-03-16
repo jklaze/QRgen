@@ -98,20 +98,35 @@ export function generateQRData(mode, inputs) {
  */
 export function getDataFromMode() {
   const mode = document.querySelector('.mode-tabs [role="tab"][aria-selected="true"]')?.dataset.mode || 'text';
+  const inputs = {};
 
-  const inputs = {
-    text: (document.getElementById('data-text')?.value || '').trim(),
-    url: (document.getElementById('data-url')?.value || '').trim(),
-    email: (document.getElementById('data-email')?.value || '').trim(),
-    emailSubject: (document.getElementById('data-email-subject')?.value || '').trim(),
-    phone: (document.getElementById('data-phone')?.value || '').trim(),
-    wifiSsid: (document.getElementById('data-wifi-ssid')?.value || '').trim(),
-    wifiPassword: document.getElementById('data-wifi-password')?.value ?? '',
-    wifiType: document.getElementById('data-wifi-type')?.value || 'WPA',
-    vcardName: (document.getElementById('data-vcard-name')?.value || '').trim(),
-    vcardTel: (document.getElementById('data-vcard-tel')?.value || '').trim(),
-    vcardEmail: (document.getElementById('data-vcard-email')?.value || '').trim(),
-  };
+  switch (mode) {
+    case 'text':
+      inputs.text = (document.getElementById('data-text')?.value || '').trim();
+      break;
+    case 'url':
+      inputs.url = (document.getElementById('data-url')?.value || '').trim();
+      break;
+    case 'email':
+      inputs.email = (document.getElementById('data-email')?.value || '').trim();
+      inputs.emailSubject = (document.getElementById('data-email-subject')?.value || '').trim();
+      break;
+    case 'phone':
+      inputs.phone = (document.getElementById('data-phone')?.value || '').trim();
+      break;
+    case 'wifi':
+      inputs.wifiSsid = (document.getElementById('data-wifi-ssid')?.value || '').trim();
+      inputs.wifiPassword = document.getElementById('data-wifi-password')?.value ?? '';
+      inputs.wifiType = document.getElementById('data-wifi-type')?.value || 'WPA';
+      break;
+    case 'vcard':
+      inputs.vcardName = (document.getElementById('data-vcard-name')?.value || '').trim();
+      inputs.vcardTel = (document.getElementById('data-vcard-tel')?.value || '').trim();
+      inputs.vcardEmail = (document.getElementById('data-vcard-email')?.value || '').trim();
+      break;
+    default:
+      inputs.text = (document.getElementById('data-text')?.value || '').trim();
+  }
 
   return generateQRData(mode, inputs);
 }

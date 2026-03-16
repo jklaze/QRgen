@@ -239,3 +239,49 @@ test('getCornersDotOptions (via getOptions) handles solid color options', (t) =>
   assert.strictEqual(corners.color, '#555555');
   assert.strictEqual(corners.gradient, undefined);
 });
+
+describe('getDataFromMode optimized', async () => {
+  const { getDataFromMode } = await import('../src/ui-controls.js');
+
+  it('should only query text for text mode', () => {
+    let queried = [];
+    global.document.getElementById = (id) => {
+      queried.push(id);
+      return { value: 'text value' };
+    };
+    global.document.querySelector = (sel) => {
+      if (sel === '.mode-tabs [role="tab"][aria-selected="true"]') {
+        return { dataset: { mode: 'text' } };
+      }
+      return null;
+    };
+
+    const data = getDataFromMode();
+    assert.strictEqual(data, 'text value');
+    assert.deepStrictEqual(queried, ['data-text']);
+  });
+
+  it('should only query wifi fields for wifi mode', () => {
+    let queried = [];
+    global.document.getElementById = (id) => {
+      queried.push(id);
+      if (id === 'data-wifi-ssid') return { value: 'ssid' };
+      if (id === 'data-wifi-password') return { value: 'pass' };
+      if (id === 'data-wifi-type') return { value: 'WPA' };
+      return null;
+    };
+    global.document.querySelector = (sel) => {
+      if (sel === '.mode-tabs [role="tab"][aria-selected="true"]') {
+        return { dataset: { mode: 'wifi' } };
+      }
+      return null;
+    };
+
+    const data = getDataFromMode();
+    assert.strictEqual(data, 'WIFI:T:WPA;S:ssid;P:pass;;;');
+    assert.ok(queried.includes('data-wifi-ssid'));
+    assert.ok(queried.includes('data-wifi-password'));
+    assert.ok(queried.includes('data-wifi-type'));
+    assert.strictEqual(queried.length, 3);
+  });
+});
