@@ -1,5 +1,9 @@
 export function parseHTML(html) {
-  const t = document.createElement('template');
-  t.innerHTML = html.trim();
-  return t.content.cloneNode(true);
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html.trim(), 'text/html');
+  const fragment = document.createDocumentFragment();
+  while (doc.body.firstChild) {
+    fragment.appendChild(doc.body.firstChild);
+  }
+  return fragment;
 }
